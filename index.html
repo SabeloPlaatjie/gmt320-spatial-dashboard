@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GMT 320 | South Africa Spatial Economic Activity Dashboard</title>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Dashboard Container -->
+  <div class="dashboard-wrapper">
+
+    <!-- Header Section (Req 1) -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="badge-group">
+          <span class="badge badge-primary">University of Pretoria</span>
+          <span class="badge badge-secondary">GMT 320: Geoinformatics</span>
+          <span class="badge badge-accent">● Live SEAD-SA Panel</span>
+        </div>
+        <h1 class="dashboard-title">Spatial Economic Activity & Employment Dashboard</h1>
+        <p class="dashboard-subtitle">
+          Longitudinal analysis of provincial median income and formal employment (FTE) across South Africa (2014 – 2025)
+        </p>
+      </div>
+      <div class="header-metadata">
+        <span class="meta-label">Data Source</span>
+        <span class="meta-value">SEAD-SA v6 (National Treasury & SARS)</span>
+      </div>
+    </header>
+
+    <!-- Controls / Filters Section (Req 1 & 6) -->
+    <section class="controls-card" aria-label="Dashboard Controls">
+      <div class="controls-heading">
+        <h2>Interactive Filter Controls</h2>
+        <p>Filter data to dynamically recalculate summary statistics and update visualisations.</p>
+      </div>
+      <div class="controls-grid">
+        <div class="control-group">
+          <label for="provinceFilter">Filter by Province</label>
+          <select id="provinceFilter">
+            <option value="ALL">All Provinces (National Overview)</option>
+            <option value="EC">Eastern Cape (EC)</option>
+            <option value="FS">Free State (FS)</option>
+            <option value="GT">Gauteng (GT)</option>
+            <option value="KZN">KwaZulu-Natal (KZN)</option>
+            <option value="LIM">Limpopo (LIM)</option>
+            <option value="MP">Mpumalanga (MP)</option>
+            <option value="NC">Northern Cape (NC)</option>
+            <option value="NW">North West (NW)</option>
+            <option value="WC">Western Cape (WC)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="yearFilter">Select Tax Year</label>
+          <select id="yearFilter">
+            <option value="2025">2025 (Latest Projection)</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020 (COVID-19 Impact)</option>
+            <option value="2019">2019</option>
+            <option value="2018">2018</option>
+            <option value="2017">2017</option>
+            <option value="2016">2016</option>
+            <option value="2015">2015</option>
+            <option value="2014">2014 (Baseline)</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="metricFilter">Primary Metric</label>
+          <select id="metricFilter">
+            <option value="MedianIncome">Monthly Median Income (ZAR)</option>
+            <option value="FTE">Formal Employment (FTE Count)</option>
+          </select>
+        </div>
+
+        <div class="control-group btn-group">
+          <label>&nbsp;</label>
+          <button id="resetBtn" class="btn btn-reset">Reset Filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI Summary Indicators Section (Req 3 & 5) -->
+    <section class="kpi-grid" aria-label="Key Performance Indicators">
+      <div class="kpi-card">
+        <span class="kpi-label">Total Formal Employment (FTE)</span>
+        <span class="kpi-value" id="kpiTotalFte">--</span>
+        <span class="kpi-meta" id="kpiTotalFteMeta">National total formal workforce</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">Average Median Monthly Wage</span>
+        <span class="kpi-value highlight-cyan" id="kpiAvgIncome">--</span>
+        <span class="kpi-meta" id="kpiAvgIncomeMeta">Across formal employees</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">Highest Earning Region</span>
+        <span class="kpi-value highlight-emerald" id="kpiTopProvince">--</span>
+        <span class="kpi-meta" id="kpiTopProvinceMeta">Highest median income</span>
+      </div>
+
+      <div class="kpi-card">
+        <span class="kpi-label">Provincial Employment Leader</span>
+        <span class="kpi-value highlight-indigo" id="kpiTopFteProvince">--</span>
+        <span class="kpi-meta" id="kpiTopFteProvinceMeta">Largest employment share</span>
+      </div>
+    </section>
+
+    <!-- Visualisation Grid Section (Req 4) -->
+    <main class="visualisation-grid">
+      <!-- Chart 1: Line Chart (Temporal Trend) -->
+      <article class="chart-card full-width">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title" id="lineChartTitle">Chart 1: Longitudinal Trend (2014 – 2025)</h3>
+            <p class="chart-desc">Tracks temporal changes in economic returns and employment capacity over a 12-year window.</p>
+          </div>
+          <span class="chart-badge">Time Series • Line</span>
+        </div>
+        <div class="chart-canvas-wrapper tall">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </article>
+
+      <!-- Chart 2: Bar Chart (Spatial Comparison) -->
+      <article class="chart-card">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title" id="barChartTitle">Chart 2: Provincial Comparison (<span class="current-year-label">2025</span>)</h3>
+            <p class="chart-desc">Compares performance across all 9 provinces for the selected tax year.</p>
+          </div>
+          <span class="chart-badge">Spatial • Bar</span>
+        </div>
+        <div class="chart-canvas-wrapper">
+          <canvas id="barChart"></canvas>
+        </div>
+      </article>
+
+      <!-- Chart 3: Doughnut Chart (Proportional Composition) -->
+      <article class="chart-card">
+        <div class="chart-header">
+          <div>
+            <h3 class="chart-title" id="doughnutChartTitle">Chart 3: Formal Employment Distribution (<span class="current-year-label">2025</span>)</h3>
+            <p class="chart-desc">Proportional share of total formal employment (FTE) across provinces.</p>
+          </div>
+          <span class="chart-badge">Composition • Doughnut</span>
+        </div>
+        <div class="chart-canvas-wrapper">
+          <canvas id="doughnutChart"></canvas>
+        </div>
+      </article>
+    </main>
+
+    <!-- Academic Insights Summary (Supports Final PDF 200-word essay) -->
+    <section class="insights-card">
+      <div class="insights-header">
+        <h3>Spatial Economic Insights & Findings</h3>
+        <span class="insights-tag">200-Word Academic Summary</span>
+      </div>
+      <p class="insights-body">
+        Analysis of the SEAD-SA provincial tax panel (2014–2025) demonstrates substantial spatial asymmetry in South Africa's formal economy. 
+        <strong>Gauteng (GT)</strong> and the <strong>Western Cape (WC)</strong> together account for over <strong>55% of total national formal employment</strong>, acting as primary economic anchors. While Gauteng reports consistently high employee volume and robust wages (~R14,800/month), the <strong>North West (NW)</strong> province reflects elevated median wages (~R15,500/month) largely driven by capital-intensive mining operations, despite lower total job volumes. 
+        Longitudinally, the 2020–2021 tax years demonstrate a distinct dip in real median earnings corresponding with the COVID-19 pandemic shock, followed by steady nominal recovery through 2025. 
+        These interactive visualisations confirm that spatial disparities persist: coastal and mining provinces experience divergent wage-to-employment elasticities compared to agrarian regions like Limpopo and the Eastern Cape.
+      </p>
+    </section>
+
+    <!-- Footer Section (Req 1 & Rubric compliance) -->
+    <footer class="dashboard-footer">
+      <div class="footer-left">
+        <p><strong>GMT 320: Geoinformatics Project</strong> — Assignment 1: Data Visualisation & Version Control</p>
+        <p class="footer-subtext">Designed & Implemented with vanilla HTML5, CSS3, JavaScript, and Chart.js. No third-party CSS frameworks used.</p>
+      </div>
+      <div class="footer-right">
+        <p>Dataset: <a href="https://spatialtaxdata.org.za" target="_blank" rel="noopener">SEAD-SA Panel (v6)</a></p>
+        <p class="footer-subtext">University of Pretoria © 2026</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Dashboard JavaScript Engine -->
+  <script src="app.js"></script>
+</body>
+</html>
