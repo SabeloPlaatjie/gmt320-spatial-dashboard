@@ -262,8 +262,8 @@ function updateKPIs(stats, selectedProvince, selectedYear) {
   
   document.getElementById("kpiAvgIncome").innerText = formatCurrency(stats.avgIncome);
   document.getElementById("kpiAvgIncomeMeta").innerText = selectedProvince === "ALL"
-    ? `National weighted average wage`
-    : `Provincial median monthly wage`;
+    ? `National weighted nominal wage`
+    : `Provincial nominal median wage`;
   
   document.getElementById("kpiTopProvince").innerText = stats.topProvince;
   document.getElementById("kpiTopProvinceMeta").innerText = `${formatCurrency(stats.topIncome)} / month (${selectedYear})`;
@@ -325,7 +325,7 @@ function renderLineChart(data, selectedProvince, selectedMetric) {
   }
 
   const isCurrency = selectedMetric === "MedianIncome";
-  const yAxisTitle = isCurrency ? "Monthly Median Wage (ZAR)" : "Full-Time Equivalent (FTE)";
+  const yAxisTitle = isCurrency ? "Nominal Monthly Median Wage (ZAR)" : "Full-Time Equivalent (FTE)";
 
   if (chartInstances.lineChart) {
     chartInstances.lineChart.data.labels = years;
@@ -406,7 +406,7 @@ function renderBarChart(data, selectedYear, selectedProvince, selectedMetric) {
   });
 
   const isCurrency = selectedMetric === "MedianIncome";
-  const label = isCurrency ? "Monthly Median Wage (ZAR)" : "Full-Time Equivalent (FTE)";
+  const label = isCurrency ? "Nominal Monthly Median Wage (ZAR)" : "Full-Time Equivalent (FTE)";
 
   if (chartInstances.barChart) {
     chartInstances.barChart.data.labels = provinces.map(p => PROVINCE_NAMES[p]);
@@ -535,6 +535,133 @@ function renderDoughnutChart(data, selectedYear) {
   }
 }
 
+// Geospatial Choropleth Map Renderer (Geoinformatics Component)
+function renderChoroplethMap(data, selectedYear, selectedMetric, selectedProvince) {
+  const mapSvg = document.getElementById("saChoroplethMap");
+  if (!mapSvg || typeof SA_PROVINCES_SVG === "undefined") return;
+
+  const yearData = data.filter(d => d.TaxYear === selectedYear && !d.PROVINCE.includes("Anomaly"));
+  const isCurrency = selectedMetric === "MedianIncome";
+  
+  // Extract values for 9 provinces
+  const provMap = {};
+  yearData.forEach(row => {
+    provMap[row.PROVINCE] = row[selectedMetric];
+  });
+  
+  const values = Object.values(provMap).filter(v => v !== undefined && v !== null);
+  const minVal = Math.min(...values);
+  const maxVal = Math.max(...values);
+  
+  // 5-class sequential color scale
+  const COLOR_SCALE = [
+    "#bae6fd", // Lowest quantile
+    "#7dd3fc",
+    "#38bdf8",
+    "#0284c7",
+    "#1e3a8a"  // Highest quantile
+  ];
+  
+  function getColor(val) {
+    if (val === undefined || maxVal === minVal) return "#334155";
+    const ratio = Math.max(0, Math.min(1, (val - minVal) / (maxVal - minVal)));
+    const idx = Math.min(COLOR_SCALE.length - 1, Math.floor(ratio * COLOR_SCALE.length));
+    return COLOR_SCALE[idx];
+  }
+
+  // Update description header
+  const mapMetricDesc = document.getElementById("mapMetricDesc");
+  if (mapMetricDesc) {
+    mapMetricDesc.innerText = isCurrency ? "nominal median monthly wage (ZAR)" : "full-time equivalent formal employment (FTE)";
+  }
+
+  // Clear existing SVG content and ensure viewBox
+  mapSvg.setAttribute("viewBox", typeof SA_MAP_VIEWBOX !== "undefined" ? SA_MAP_VIEWBOX : "0 0 750 666");
+  mapSvg.innerHTML = "";
+
+  const tooltip = document.getElementById("mapTooltip");
+
+  // Render province polygon paths
+  Object.keys(SA_PROVINCES_SVG).forEach(code => {
+    const prov = SA_PROVINCES_SVG[code];
+    const val = provMap[code] || 0;
+    const color = getColor(val);
+    const isSelected = selectedProvince === code;
+    const isDimmed = selectedProvince !== "ALL" && !isSelected;
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", prov.d);
+    path.setAttribute("id", `map-prov-${code}`);
+    path.setAttribute("class", `map-province-path ${isSelected ? "selected" : ""} ${isDimmed ? "dimmed" : ""}`);
+    path.setAttribute("fill", color);
+
+    // Mouse events for tooltips
+    path.addEventListener("mousemove", (e) => {
+      const containerRect = mapSvg.parentElement.getBoundingClientRect();
+      const x = e.clientX - containerRect.left;
+      const y = e.clientY - containerRect.top;
+      
+      const formattedVal = isCurrency ? formatCurrency(val) : formatNumber(val) + " FTE";
+      tooltip.style.display = "block";
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+      tooltip.innerHTML = `<strong>${prov.name} (${code})</strong><br/>${isCurrency ? "Nominal Median Wage" : "FTE Volume"}: <strong>${formattedVal}</strong><br/><span style="font-size:0.75rem; color:#94a3b8;">Click to filter dashboard</span>`;
+    });
+
+    path.addEventListener("mouseleave", () => {
+      tooltip.style.display = "none";
+    });
+
+    // Click event filters the entire dashboard
+    path.addEventListener("click", () => {
+      const provSelect = document.getElementById("provinceFilter");
+      provSelect.value = provSelect.value === code ? "ALL" : code;
+      provSelect.dispatchEvent(new Event("change"));
+    });
+
+    mapSvg.appendChild(path);
+
+    // Province Label Text
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", prov.cx);
+    text.setAttribute("y", prov.cy);
+    text.setAttribute("class", "map-province-label");
+    text.textContent = code;
+    mapSvg.appendChild(text);
+  });
+
+  // Render legend
+  renderMapLegend(minVal, maxVal, isCurrency, COLOR_SCALE);
+}
+
+function renderMapLegend(minVal, maxVal, isCurrency, colorScale) {
+  const legendScale = document.getElementById("mapLegendScale");
+  if (!legendScale) return;
+  legendScale.innerHTML = "";
+
+  const step = (maxVal - minVal) / colorScale.length;
+  for (let i = 0; i < colorScale.length; i++) {
+    const rangeMin = minVal + i * step;
+    const rangeMax = minVal + (i + 1) * step;
+    
+    const row = document.createElement("div");
+    row.className = "legend-row";
+
+    const box = document.createElement("div");
+    box.className = "legend-color-box";
+    box.style.backgroundColor = colorScale[i];
+
+    const label = document.createElement("span");
+    const fmtMin = isCurrency ? ("R" + Math.round(rangeMin).toLocaleString()) : (Math.round(rangeMin / 1000) + "k FTE");
+    const fmtMax = isCurrency ? ("R" + Math.round(rangeMax).toLocaleString()) : (Math.round(rangeMax / 1000) + "k FTE");
+    label.innerText = `${fmtMin} – ${fmtMax}`;
+
+    row.appendChild(box);
+    row.appendChild(label);
+    legendScale.appendChild(row);
+  }
+}
+
 // Master Dashboard Controller & Dynamic Filter Handler (Req 6)
 function updateDashboard() {
   const provinceSelect = document.getElementById("provinceFilter");
@@ -549,7 +676,8 @@ function updateDashboard() {
   const stats = computeSummaryStats(rawDataset, selectedYear, selectedProvince);
   updateKPIs(stats, selectedProvince, selectedYear);
 
-  // 2. Update Charts Dynamically (Req 4 & 6)
+  // 2. Update Map & Charts Dynamically (Req 4 & 6)
+  renderChoroplethMap(rawDataset, selectedYear, selectedMetric, selectedProvince);
   renderLineChart(rawDataset, selectedProvince, selectedMetric);
   renderBarChart(rawDataset, selectedYear, selectedProvince, selectedMetric);
   renderDoughnutChart(rawDataset, selectedYear);

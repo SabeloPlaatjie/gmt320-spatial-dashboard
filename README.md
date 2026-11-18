@@ -22,29 +22,33 @@
   The dataset captures longitudinal formal economic activity across South Africa from **2014 to 2025** at the provincial spatial tier. It contains both quantitative and categorical dimensions, specifically:
   - **Categorical / Spatial:** Nine South African provinces (`EC`, `FS`, `GT`, `KZN`, `LIM`, `MP`, `NC`, `NW`, `WC`).
   - **Temporal:** Continuous multi-year observations spanning 12 tax years (2014–2025).
-  - **Quantitative:** Median Monthly Income in ZAR (derived from formal personal income tax records) and Full-Time Equivalent (FTE) formal employment (a standardized metric of formal labour volume derived from IRP5/IT3a certificates pro-rated by period worked, distinct from raw employee headcounts).
+  - **Quantitative:** Nominal Median Monthly Income in ZAR (derived from formal personal income tax records) and Full-Time Equivalent (FTE) formal employment (a standardized metric of formal labour volume derived from IRP5/IT3a certificates pro-rated by period worked, distinct from raw employee headcounts).
+
+> **Understanding Provincial Wage Differences in SARS Tax Data:**  
+> The dataset reflects authentic administrative tax panel records. Western Cape and KwaZulu-Natal exhibit relatively low median monthly earnings (~R9,800 to R10,750) because the *median* (50th percentile) is anchored by large bases of lower-wage formal workers in retail, hospitality, services, and agriculture. Conversely, the North West province (~R15,470) and Gauteng (~R14,830) report high median formal wages due to capital-intensive, unionized extractive industries (e.g., the Bushveld platinum belt in Rustenburg) and concentrated commercial finance payrolls.
 
 ---
 
 ## 3. Analytical Findings (What the Dashboard Reveals — Max 200 Words)
 
-> Analysis of the SEAD-SA provincial tax panel (2014–2025) demonstrates substantial spatial asymmetry in South Africa's formal economy. **Gauteng (GT)** and the **Western Cape (WC)** together account for over **55% of total national full-time equivalent (FTE) employment**, acting as primary economic anchors. While Gauteng reports consistently high employee volume and robust wages (~R14,800/month), the **North West (NW)** province reflects elevated median wages (~R15,500/month) largely driven by capital-intensive mining operations, despite lower total job volumes. Longitudinally, the 2020–2021 tax years demonstrate a distinct dip in real median earnings corresponding with the COVID-19 pandemic shock, followed by steady nominal recovery through 2025. These interactive visualisations confirm that spatial disparities persist: coastal and mining provinces experience divergent wage-to-employment elasticities compared to agrarian regions like Limpopo and the Eastern Cape.
-*(Word count: 139 words — strictly adhering to the 200-word limit)*
+> Analysis of the SEAD-SA provincial tax panel (2014–2025) demonstrates distinct spatial and sectoral divergences across South Africa's formal economy. In labour volume, **Gauteng (GT)** and the **Western Cape (WC)** serve as national employment anchors, together accounting for **62% of all formal Full-Time Equivalent (FTE) jobs** in 2025 (~3.96M and ~1.89M FTE respectively). However, employment concentration does not mirror earnings: the Western Cape (R10,753) and KwaZulu-Natal (R9,858) record the lowest provincial median wages, weighed down by expansive low-wage services, retail, and agriculture. Conversely, capital-intensive mining provinces—most notably the **North West (NW)** at R15,474/month—exhibit high formal median wages driven by unionized extractive payrolls despite smaller workforces (~520k FTE). Longitudinal trajectories reveal that the primary economic contraction occurred acutely in the **2021 tax year** (reflecting initial COVID-19 pandemic shocks), with nominal earnings falling across all nine provinces. Post-2021 recovery has been starkly uneven: while Gauteng eclipsed its pre-pandemic nominal earnings by 2025, North West, Free State, Limpopo, and KwaZulu-Natal stagnated or remained well below their 2020 peaks in nominal terms.
+*(Word count: 167 words — strictly compliant with the 200-word ceiling)*
 
 ---
 
 ## 4. Dashboard Visualisations & Architecture
 
-The web application was implemented using semantic **HTML5**, custom responsive **CSS3** (without external CSS frameworks), and vanilla **JavaScript** driving **Chart.js**:
+The web application was implemented using semantic **HTML5**, custom responsive **CSS3** (without external CSS frameworks), and vanilla **JavaScript** driving **Chart.js** alongside an **interactive SVG Choropleth Map**:
 
 1. **Header & Control Section:** Semantic navigation bar, filter controls (Province dropdown, Tax Year selector, Metric toggle, and Reset button).
 2. **KPI Summary Indicators:**
    - **Total Full-Time Equivalent (FTE):** Programmatically calculated using JavaScript `.reduce()`, representing standardized annual formal labour input.
-   - **Weighted National Average Wage:** Dynamically computed from FTE volume and median income.
+   - **Weighted Nominal Median Wage:** Dynamically computed from FTE volume and nominal median income.
    - **Regional Income Leader & FTE Employment Leader:** Derived by sorting and querying the dataset.
-3. **Three Interactive Charts:**
+3. **Geospatial & Chart Visualisations:**
+   - **Geospatial Choropleth Map:** Interactive SVG choropleth mapping South Africa's 9 provinces with dynamic 5-class quantile shading, hover tooltips, and click-to-filter capability.
    - **Chart 1 (Line Chart — Temporal):** Multi-year trend (2014–2025) comparing provincial trajectories over time.
-   - **Chart 2 (Bar Chart — Spatial):** Comparative cross-sectional analysis of all 9 provinces for the selected tax year.
+   - **Chart 2 (Bar Chart — Categorical Cross-Section):** Comparative cross-sectional analysis of all 9 provinces for the selected tax year.
    - **Chart 3 (Doughnut Chart — Composition):** Percentage share of national full-time equivalent (FTE) employment by province.
 
 ---

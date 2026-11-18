@@ -409,6 +409,146 @@ select:focus {
   color: #ffffff;
 }
 
+.insights-wordcount {
+  font-size: 0.78rem;
+  color: var(--accent-cyan);
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+/* Choropleth Map Section (Geoinformatics) */
+.map-card {
+  overflow: hidden;
+}
+
+.map-badge {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent-blue);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.map-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 14px;
+}
+
+.map-svg-wrapper {
+  flex: 1 1 68%;
+  position: relative;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  padding: 10px;
+}
+
+#saChoroplethMap {
+  width: 100%;
+  max-height: 480px;
+  display: block;
+}
+
+.map-province-path {
+  stroke: #1e293b;
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.map-province-path:hover {
+  stroke: #ffffff;
+  stroke-width: 2.5;
+  filter: brightness(1.25);
+}
+
+.map-province-path.selected {
+  stroke: #fbbf24;
+  stroke-width: 3.5;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.7));
+}
+
+.map-province-path.dimmed {
+  opacity: 0.3;
+}
+
+.map-province-label {
+  fill: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  text-anchor: middle;
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+}
+
+.map-tooltip {
+  position: absolute;
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid var(--accent-blue);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  color: var(--text-main);
+  font-size: 0.8rem;
+  pointer-events: none;
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  transform: translate(-50%, -125%);
+  white-space: nowrap;
+}
+
+.map-legend-panel {
+  flex: 1 1 32%;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.legend-header {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 8px;
+}
+
+.legend-scale {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.legend-color-box {
+  width: 24px;
+  height: 15px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.legend-note {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
 /* Footer Section */
 .dashboard-footer {
   border-top: 1px solid var(--card-border);
@@ -483,6 +623,19 @@ select:focus {
 
   .visualisation-grid {
     grid-template-columns: 1fr;
+  }
+
+  .map-container {
+    flex-direction: column;
+  }
+
+  .map-legend-panel {
+    width: 100%;
+  }
+
+  .map-svg-wrapper {
+    min-height: 280px;
+    width: 100%;
   }
 
   .chart-canvas-wrapper,
