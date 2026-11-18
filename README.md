@@ -22,14 +22,14 @@
   The dataset captures longitudinal formal economic activity across South Africa from **2014 to 2025** at the provincial spatial tier. It contains both quantitative and categorical dimensions, specifically:
   - **Categorical / Spatial:** Nine South African provinces (`EC`, `FS`, `GT`, `KZN`, `LIM`, `MP`, `NC`, `NW`, `WC`).
   - **Temporal:** Continuous multi-year observations spanning 12 tax years (2014–2025).
-  - **Quantitative:** Median Monthly Income in ZAR (derived from formal personal income tax records) and Full-Time Equivalent (FTE) formal employment job counts.
+  - **Quantitative:** Median Monthly Income in ZAR (derived from formal personal income tax records) and Full-Time Equivalent (FTE) formal employment (a standardized metric of formal labour volume derived from IRP5/IT3a certificates pro-rated by period worked, distinct from raw employee headcounts).
 
 ---
 
 ## 3. Analytical Findings (What the Dashboard Reveals — Max 200 Words)
 
-> Analysis of the SEAD-SA provincial tax panel (2014–2025) demonstrates substantial spatial asymmetry in South Africa's formal economy. **Gauteng (GT)** and the **Western Cape (WC)** together account for over **55% of total national formal employment**, acting as primary economic anchors. While Gauteng reports consistently high employee volume and robust wages (~R14,800/month), the **North West (NW)** province reflects elevated median wages (~R15,500/month) largely driven by capital-intensive mining operations, despite lower total job volumes. Longitudinally, the 2020–2021 tax years demonstrate a distinct dip in real median earnings corresponding with the COVID-19 pandemic shock, followed by steady nominal recovery through 2025. These interactive visualisations confirm that spatial disparities persist: coastal and mining provinces experience divergent wage-to-employment elasticities compared to agrarian regions like Limpopo and the Eastern Cape.
-*(Word count: 137 words — strictly adhering to the 200-word limit)*
+> Analysis of the SEAD-SA provincial tax panel (2014–2025) demonstrates substantial spatial asymmetry in South Africa's formal economy. **Gauteng (GT)** and the **Western Cape (WC)** together account for over **55% of total national full-time equivalent (FTE) employment**, acting as primary economic anchors. While Gauteng reports consistently high employee volume and robust wages (~R14,800/month), the **North West (NW)** province reflects elevated median wages (~R15,500/month) largely driven by capital-intensive mining operations, despite lower total job volumes. Longitudinally, the 2020–2021 tax years demonstrate a distinct dip in real median earnings corresponding with the COVID-19 pandemic shock, followed by steady nominal recovery through 2025. These interactive visualisations confirm that spatial disparities persist: coastal and mining provinces experience divergent wage-to-employment elasticities compared to agrarian regions like Limpopo and the Eastern Cape.
+*(Word count: 139 words — strictly adhering to the 200-word limit)*
 
 ---
 
@@ -39,13 +39,13 @@ The web application was implemented using semantic **HTML5**, custom responsive 
 
 1. **Header & Control Section:** Semantic navigation bar, filter controls (Province dropdown, Tax Year selector, Metric toggle, and Reset button).
 2. **KPI Summary Indicators:**
-   - **Total Formal Employment (FTE):** Programmatically calculated using JavaScript `.reduce()`.
-   - **Weighted National Average Wage:** Dynamically computed from employee volume and median income.
-   - **Regional Income Leader & Employment Leader:** Derived by sorting and querying the dataset.
+   - **Total Full-Time Equivalent (FTE):** Programmatically calculated using JavaScript `.reduce()`, representing standardized annual formal labour input.
+   - **Weighted National Average Wage:** Dynamically computed from FTE volume and median income.
+   - **Regional Income Leader & FTE Employment Leader:** Derived by sorting and querying the dataset.
 3. **Three Interactive Charts:**
    - **Chart 1 (Line Chart — Temporal):** Multi-year trend (2014–2025) comparing provincial trajectories over time.
    - **Chart 2 (Bar Chart — Spatial):** Comparative cross-sectional analysis of all 9 provinces for the selected tax year.
-   - **Chart 3 (Doughnut Chart — Composition):** Percentage share of formal national employment by province.
+   - **Chart 3 (Doughnut Chart — Composition):** Percentage share of national full-time equivalent (FTE) employment by province.
 
 ---
 

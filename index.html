@@ -24,7 +24,7 @@
         </div>
         <h1 class="dashboard-title">Spatial Economic Activity & Employment Dashboard</h1>
         <p class="dashboard-subtitle">
-          Longitudinal analysis of provincial median income and formal employment (FTE) across South Africa (2014 – 2025)
+          Longitudinal analysis of provincial median income and full-time equivalent formal employment (FTE) across South Africa (2014 – 2025)
         </p>
       </div>
       <div class="header-metadata">
@@ -78,7 +78,7 @@
           <label for="metricFilter">Primary Metric</label>
           <select id="metricFilter">
             <option value="MedianIncome">Monthly Median Income (ZAR)</option>
-            <option value="FTE">Formal Employment (FTE Count)</option>
+            <option value="FTE">Full-Time Equivalent Employment (FTE)</option>
           </select>
         </div>
 
@@ -92,9 +92,9 @@
     <!-- KPI Summary Indicators Section (Req 3 & 5) -->
     <section class="kpi-grid" aria-label="Key Performance Indicators">
       <div class="kpi-card">
-        <span class="kpi-label">Total Formal Employment (FTE)</span>
+        <span class="kpi-label">Total Full-Time Equivalent (FTE)</span>
         <span class="kpi-value" id="kpiTotalFte">--</span>
-        <span class="kpi-meta" id="kpiTotalFteMeta">National total formal workforce</span>
+        <span class="kpi-meta" id="kpiTotalFteMeta">Standardized formal labour volume</span>
       </div>
 
       <div class="kpi-card">
@@ -110,9 +110,9 @@
       </div>
 
       <div class="kpi-card">
-        <span class="kpi-label">Provincial Employment Leader</span>
+        <span class="kpi-label">FTE Employment Leader</span>
         <span class="kpi-value highlight-indigo" id="kpiTopFteProvince">--</span>
-        <span class="kpi-meta" id="kpiTopFteProvinceMeta">Largest employment share</span>
+        <span class="kpi-meta" id="kpiTopFteProvinceMeta">Largest provincial FTE share</span>
       </div>
     </section>
 
@@ -150,8 +150,8 @@
       <article class="chart-card">
         <div class="chart-header">
           <div>
-            <h3 class="chart-title" id="doughnutChartTitle">Chart 3: Formal Employment Distribution (<span class="current-year-label">2025</span>)</h3>
-            <p class="chart-desc">Proportional share of total formal employment (FTE) across provinces.</p>
+            <h3 class="chart-title" id="doughnutChartTitle">Chart 3: FTE Employment Distribution (<span class="current-year-label">2025</span>)</h3>
+            <p class="chart-desc">Proportional share of standardized full-time equivalent (FTE) labour across provinces.</p>
           </div>
           <span class="chart-badge">Composition • Doughnut</span>
         </div>
@@ -169,7 +169,7 @@
       </div>
       <p class="insights-body">
         Analysis of the SEAD-SA provincial tax panel (2014–2025) demonstrates substantial spatial asymmetry in South Africa's formal economy. 
-        <strong>Gauteng (GT)</strong> and the <strong>Western Cape (WC)</strong> together account for over <strong>55% of total national formal employment</strong>, acting as primary economic anchors. While Gauteng reports consistently high employee volume and robust wages (~R14,800/month), the <strong>North West (NW)</strong> province reflects elevated median wages (~R15,500/month) largely driven by capital-intensive mining operations, despite lower total job volumes. 
+        <strong>Gauteng (GT)</strong> and the <strong>Western Cape (WC)</strong> together account for over <strong>55% of total national full-time equivalent (FTE) employment</strong>, acting as primary economic anchors. While Gauteng reports consistently high employee volume and robust wages (~R14,800/month), the <strong>North West (NW)</strong> province reflects elevated median wages (~R15,500/month) largely driven by capital-intensive mining operations, despite lower total job volumes. 
         Longitudinally, the 2020–2021 tax years demonstrate a distinct dip in real median earnings corresponding with the COVID-19 pandemic shock, followed by steady nominal recovery through 2025. 
         These interactive visualisations confirm that spatial disparities persist: coastal and mining provinces experience divergent wage-to-employment elasticities compared to agrarian regions like Limpopo and the Eastern Cape.
       </p>

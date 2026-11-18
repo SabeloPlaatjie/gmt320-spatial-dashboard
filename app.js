@@ -257,8 +257,8 @@ function computeSummaryStats(data, selectedYear, selectedProvince) {
 function updateKPIs(stats, selectedProvince, selectedYear) {
   document.getElementById("kpiTotalFte").innerText = formatNumber(stats.totalFTE);
   document.getElementById("kpiTotalFteMeta").innerText = selectedProvince === "ALL" 
-    ? `National formal workforce (${selectedYear})` 
-    : `${PROVINCE_NAMES[selectedProvince]} formal workforce (${selectedYear})`;
+    ? `National formal FTE volume (${selectedYear})` 
+    : `${PROVINCE_NAMES[selectedProvince]} formal FTE volume (${selectedYear})`;
   
   document.getElementById("kpiAvgIncome").innerText = formatCurrency(stats.avgIncome);
   document.getElementById("kpiAvgIncomeMeta").innerText = selectedProvince === "ALL"
@@ -269,7 +269,7 @@ function updateKPIs(stats, selectedProvince, selectedYear) {
   document.getElementById("kpiTopProvinceMeta").innerText = `${formatCurrency(stats.topIncome)} / month (${selectedYear})`;
   
   document.getElementById("kpiTopFteProvince").innerText = stats.topFteProvince;
-  document.getElementById("kpiTopFteProvinceMeta").innerText = `${formatNumber(stats.topFte)} formal jobs (${selectedYear})`;
+  document.getElementById("kpiTopFteProvinceMeta").innerText = `${formatNumber(stats.topFte)} FTE (${selectedYear})`;
   
   // Update year labels in chart headers
   document.querySelectorAll(".current-year-label").forEach(el => {
@@ -325,7 +325,7 @@ function renderLineChart(data, selectedProvince, selectedMetric) {
   }
 
   const isCurrency = selectedMetric === "MedianIncome";
-  const yAxisTitle = isCurrency ? "Monthly Median Wage (ZAR)" : "Formal Employment (FTE)";
+  const yAxisTitle = isCurrency ? "Monthly Median Wage (ZAR)" : "Full-Time Equivalent (FTE)";
 
   if (chartInstances.lineChart) {
     chartInstances.lineChart.data.labels = years;
@@ -406,7 +406,7 @@ function renderBarChart(data, selectedYear, selectedProvince, selectedMetric) {
   });
 
   const isCurrency = selectedMetric === "MedianIncome";
-  const label = isCurrency ? "Monthly Median Wage (ZAR)" : "Formal Employment (FTE)";
+  const label = isCurrency ? "Monthly Median Wage (ZAR)" : "Full-Time Equivalent (FTE)";
 
   if (chartInstances.barChart) {
     chartInstances.barChart.data.labels = provinces.map(p => PROVINCE_NAMES[p]);
@@ -525,7 +525,7 @@ function renderDoughnutChart(data, selectedYear) {
               label: function(context) {
                 const val = context.raw || 0;
                 const percentage = totalFTE > 0 ? ((val / totalFTE) * 100).toFixed(1) : 0;
-                return ` ${formatNumber(val)} jobs (${percentage}%)`;
+                return ` ${formatNumber(val)} FTE (${percentage}%)`;
               }
             }
           }
